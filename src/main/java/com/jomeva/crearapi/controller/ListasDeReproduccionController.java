@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
- *
- * @author Jorge Melendez
+ * Controlador para gestionar las operaciones relacionadas con las listas de reproducción.
  */
 @RestController
 @RequestMapping("/lists")
@@ -35,6 +34,12 @@ public class ListasDeReproduccionController {
   @Autowired
   private ListaDeReproduccionService listaDeReproduccionService;
 
+   /**
+     * Crea una nueva lista de reproducción en la base de datos.
+     *
+     * @param listaDeReproduccion La lista de reproducción que se va a crear.
+     * @return ResponseEntity que contiene la lista de reproducción creada o un mensaje de error en caso de un nombre de lista no válido.
+     */
   @PostMapping
   public ResponseEntity<Object> crearListaDeReproduccion(@RequestBody ListasDeReproduccion listaDeReproduccion) {
     if (listaDeReproduccion.getNombre() == null || listaDeReproduccion.getNombre().isEmpty()) {
@@ -50,12 +55,22 @@ public class ListasDeReproduccionController {
 
     return ResponseEntity.created(location).body(nuevaLista);
   }
-
+/**
+     * Obtiene todas las listas de reproducción disponibles.
+     *
+     * @return Una lista de todas las listas de reproducción en la base de datos.
+     */
   @GetMapping
   public List<ListasDeReproduccion> getAllListasDeReproduccion() {
     return listaDeReproduccionService.getAllListasDeReproduccion();
   }
 
+   /**
+     * Obtiene una lista de reproducción por su nombre.
+     *
+     * @param listName El nombre de la lista de reproducción que se busca.
+     * @return ResponseEntity que contiene la lista de reproducción encontrada o un mensaje de error si no se encuentra.
+     */
   @GetMapping("/get/{listName}")
   public ResponseEntity<Object> obtenerListaDeReproduccionPorNombre(@PathVariable String listName) {
     ListasDeReproduccion lista = listaDeReproduccionService.obtenerListaDeReproduccionPorNombre(listName);
@@ -67,6 +82,12 @@ public class ListasDeReproduccionController {
     }
   }
 
+   /**
+     * Elimina una lista de reproducción por su nombre.
+     *
+     * @param listName El nombre de la lista de reproducción que se desea eliminar.
+     * @return ResponseEntity que indica si se eliminó correctamente o si la lista no existe.
+     */
   @DeleteMapping("/delete/{listName}")
   public ResponseEntity<String> deleteListaDeReproduccionPorNombre(@PathVariable String listName) {
     // Llama al servicio para eliminar la lista de reproducción por nombre
@@ -79,11 +100,24 @@ public class ListasDeReproduccionController {
     }
   }
 
+   /**
+     * Elimina una lista de reproducción por su ID.
+     *
+     * @param id El ID de la lista de reproducción que se desea eliminar.
+     */
   @GetMapping("/{id}")
   public void deleteListasDeReproduccionById(@PathVariable("id") Long id) {
     listaDeReproduccionService.deleteListasDeReproduccion(id);
   }
 
+  /**
+     * Agrega una canción a una lista de reproducción.
+     *
+     * @param playlistId El ID de la lista de reproducción a la que se agregará la canción.
+     * @param cancion    La canción que se agregará a la lista.
+     * @return ResponseEntity que contiene la lista de reproducción actualizada o un mensaje de error si la lista no se encuentra.
+     */
+  
   @PutMapping("/add/{playlistId}")
   public ResponseEntity<Object> agregarCancionALista(@PathVariable Long playlistId, @RequestBody Cancion cancion) {
     // Busca la lista de reproducción por su ID

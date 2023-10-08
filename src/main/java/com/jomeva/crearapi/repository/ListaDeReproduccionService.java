@@ -9,36 +9,65 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 /**
- *
- * @author Jorge Melendez
+ * Servicio que proporciona operaciones CRUD para la entidad "ListasDeReproduccion".
  */
 @Component
 public class ListaDeReproduccionService {
 
     @Autowired
     private ListasDeReproduccionRepository listasDeReproduccionRepository;
-
+/**
+     * Crea una nueva lista de reproducción en la base de datos.
+     *
+     * @param listasDeReproduccion La lista de reproducción que se va a crear.
+     * @return La lista de reproducción creada.
+     */
     public ListasDeReproduccion createListasDeReproduccion(ListasDeReproduccion listasDeReproduccion) {
         return listasDeReproduccionRepository.save(listasDeReproduccion);
     }
-
+   /**
+     * Obtiene una lista de reproducción por su ID.
+     *
+     * @param id El ID de la lista de reproducción que se busca.
+     * @return La lista de reproducción con el ID especificado, o null si no se encuentra.
+     */
     public ListasDeReproduccion getListasDeReproduccion(Long id) {
         Optional<ListasDeReproduccion> optionalListas = listasDeReproduccionRepository.findById(id);
         return optionalListas.orElse(null);
     }
-
+ /**
+     * Obtiene todas las listas de reproducción disponibles.
+     *
+     * @return Una lista de todas las listas de reproducción en la base de datos.
+     */
     public List<ListasDeReproduccion> getAllListasDeReproduccion() {
         return listasDeReproduccionRepository.findAll();
     }
-
+/**
+     * Elimina una lista de reproducción por su ID.
+     *
+     * @param id El ID de la lista de reproducción que se desea eliminar.
+     */
     public void deleteListasDeReproduccion(Long id) {
         listasDeReproduccionRepository.deleteById(id);
     }
+    /**
+     * Obtiene una lista de reproducción por su nombre.
+     *
+     * @param nombre El nombre de la lista de reproducción que se busca.
+     * @return La lista de reproducción con el nombre especificado, o null si no se encuentra.
+     */
 public ListasDeReproduccion obtenerListaDeReproduccionPorNombre(String nombre) {
     return listasDeReproduccionRepository.findByNombre(nombre);
 }
+
+    /**
+     * Elimina una lista de reproducción por su nombre.
+     *
+     * @param nombre El nombre de la lista de reproducción que se desea eliminar.
+     * @return `true` si se eliminó correctamente, `false` si la lista no existe.
+     */
 public boolean deleteListaDeReproduccionPorNombre(String nombre) {
         // Busca la lista de reproducción por nombre
         ListasDeReproduccion lista = listasDeReproduccionRepository.findByNombre(nombre);
@@ -50,7 +79,12 @@ public boolean deleteListaDeReproduccionPorNombre(String nombre) {
             return false; // Indica que la lista no existe
         }
     }
-
+   /**
+     * Actualiza una lista de reproducción en la base de datos.
+     *
+     * @param listaDeReproduccion La lista de reproducción con los cambios.
+     * @return La lista de reproducción actualizada o `null` si no existe.
+     */
     public ListasDeReproduccion updateListasDeReproduccion(ListasDeReproduccion listaDeReproduccion) {
         // Verifica si la lista de reproducción existe en la base de datos
         ListasDeReproduccion listaExistente = listasDeReproduccionRepository.findById(listaDeReproduccion.getId()).orElse(null);

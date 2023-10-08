@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
- * @author Jorge Melendez
+ * Controlador para gestionar las operaciones relacionadas con las canciones.
  */
 @RestController
 @RequestMapping("canciones") 
@@ -27,21 +26,41 @@ public class CancionController {
   @Autowired
   private CancionService cancionService;
   
-  	
+  	/**
+     * Crea una nueva canción en la base de datos.
+     *
+     * @param cancion La canción que se va a crear.
+     * @return La canción creada.
+     */
   @PostMapping
   public Cancion createCancion(@RequestBody Cancion cancion){   
     return cancionService.createCancion(cancion);
   }
-  
+   /**
+     * Obtiene todas las canciones disponibles.
+     *
+     * @return Una lista de todas las canciones en la base de datos.
+     */
   @GetMapping
   public List<Cancion> getAllCanciones(){
     return cancionService.getAllCanciones();
   }   
   
+  /**
+     * Obtiene una canción por su ID.
+     *
+     * @param id El ID de la canción que se busca.
+     * @return La canción con el ID especificado, o null si no se encuentra.
+     */
   @GetMapping("{id}")
   public Cancion buscarCancionporId(@PathVariable("id") Long id){   
     return cancionService.getCancion(id);
   }
+     /**
+     * Elimina una canción por su ID.
+     *
+     * @param id El ID de la canción que se desea eliminar.
+     */
   @DeleteMapping("{id}")
   public void  borrarCancionporId(@PathVariable("id") Long id){
    
