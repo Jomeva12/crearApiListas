@@ -2,20 +2,28 @@
 package com.jomeva.crearapi.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import lombok.Data;
 
 /**
  *
  * @author Jorge Meléndez
  */
 @Entity
-@Table(name = "listaDeReproduccion")
+@Table(name = "ListaDeReproduccion")
+@Data
 public class ListasDeReproduccion {
  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,40 +32,19 @@ public class ListasDeReproduccion {
     private String nombre;
     private String descripcion;
 
-    @ManyToMany
-    private List<Cancion> canciones;
-
+ 
+  //@ManyToMany 
+   // private List<Cancion> cancion;
+ @ManyToMany
+    @JoinTable(
+        name = "lista_de_reproduccion_cancion",
+        joinColumns = @JoinColumn(name = "lista_de_reproduccion_id"),
+        inverseJoinColumns = @JoinColumn(name = "cancion_id"),
+        uniqueConstraints = @UniqueConstraint(columnNames = { "lista_de_reproduccion_id", "cancion_id" })
+    )
+    private Set<Cancion> cancion = new HashSet<>();
    
 
-  public Long getId() {
-    return id;
-  }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
-
-  public String getDescripcion() {
-    return descripcion;
-  }
-
-  public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
-  }
-
-  public List<Cancion> getCanciones() {
-    return canciones;
-  }
-
-  public void setCanciones(List<Cancion> canciones) {
-    this.canciones = canciones;
-  }
+ 
 }

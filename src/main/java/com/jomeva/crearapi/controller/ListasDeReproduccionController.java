@@ -109,6 +109,18 @@ public class ListasDeReproduccionController {
   public void deleteListasDeReproduccionById(@PathVariable("id") Long id) {
     listaDeReproduccionService.deleteListasDeReproduccion(id);
   }
+  /**
+   *mando dos id para comparar si en la lista existe la canción
+   * 
+   * @param playlistId El ID de la lista de reproducción a la que se agregará la canción.
+   * @param idCancion    id de la canción que se agregará a la lista.
+   */
+@GetMapping("/getcancion/{playlistId}/{idCancion}")
+public ResponseEntity<Boolean> existeCancionEnLista(@PathVariable Long playlistId, @PathVariable Long idCancion) {
+    boolean cancionEnLista = listaDeReproduccionService.existeCancionEnLista(idCancion, playlistId);
+    System.out.println("cancion de lista---> " + cancionEnLista);
+    return ResponseEntity.ok(cancionEnLista);
+}
 
   /**
      * Agrega una canción a una lista de reproducción.
@@ -117,7 +129,7 @@ public class ListasDeReproduccionController {
      * @param cancion    La canción que se agregará a la lista.
      * @return ResponseEntity que contiene la lista de reproducción actualizada o un mensaje de error si la lista no se encuentra.
      */
-  
+   
   @PutMapping("/add/{playlistId}")
   public ResponseEntity<Object> agregarCancionALista(@PathVariable Long playlistId, @RequestBody Cancion cancion) {
     // Busca la lista de reproducción por su ID
@@ -128,9 +140,13 @@ public class ListasDeReproduccionController {
     if (listaDeReproduccion == null) {
       return ResponseEntity.notFound().build();
     }
+     // Verifica si la relación entre la canción y la lista ya existe
+    if (listaDeReproduccion.getCancion().stream().anyMatch(c -> c.getId().equals(idCancion))) {
+        return ResponseEntity.badRequest().body("La canción ya está en la lista de reproducción.");
+    }
 
     // Agrega la canción a la lista de reproducción
-    listaDeReproduccion.getCanciones().add(cancion);
+    listaDeReproduccion.getCancion().add(cancion);
 
     // Guarda la lista de reproducción actualizada
     listaDeReproduccion = listaDeReproduccionService.createListasDeReproduccion(listaDeReproduccion);
@@ -142,5 +158,20 @@ public class ListasDeReproduccionController {
             .toUri();
 
     return ResponseEntity.created(location).body(listaDeReproduccion);
+    
+//
+//    // Agrega la canción a la lista de reproducción
+//    listaDeReproduccion.getCancion().add(cancion);
+//
+//    // Guarda la lista de reproducción actualizada
+//    listaDeReproduccion = listaDeReproduccionService.createListasDeReproduccion(listaDeReproduccion);
+//
+//    URI location = ServletUriComponentsBuilder
+//            .fromCurrentRequest()
+//            .path("/{id}")
+//            .buildAndExpand(listaDeReproduccion.getId())
+//            .toUri();
+//
+//    return ResponseEntity.created(location).body(listaDeReproduccion);
   }
 }

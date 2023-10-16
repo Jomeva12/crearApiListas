@@ -36,6 +36,19 @@ public class ListaDeReproduccionService {
         Optional<ListasDeReproduccion> optionalListas = listasDeReproduccionRepository.findById(id);
         return optionalListas.orElse(null);
     }
+    public boolean existeCancionEnLista( Long idCancion, Long idLista){
+       // Obtén la lista de reproducción por su ID
+    ListasDeReproduccion listaDeReproduccion = listasDeReproduccionRepository.getReferenceById(idLista);
+     
+    if (listaDeReproduccion == null) {
+        // La lista de reproducción no existe
+        return false;
+    }
+
+    // Verifica si la canción se encuentra en la lista
+    return listaDeReproduccion.getCancion().stream()
+            .anyMatch(c -> c.getId().equals(idCancion));
+    }
  /**
      * Obtiene todas las listas de reproducción disponibles.
      *

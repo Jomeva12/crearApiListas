@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controlador para gestionar las operaciones relacionadas con las canciones.
  */
 @RestController
-@RequestMapping("canciones") 
+@RequestMapping("cancion") 
 public class CancionController {
   @Autowired
   private CancionService cancionService;
