@@ -5,7 +5,7 @@
 package com.jomeva.crearapi.controller;
 
 import com.jomeva.crearapi.model.Cancion;
-import com.jomeva.crearapi.repository.CancionService;
+import com.jomeva.crearapi.service.CancionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;

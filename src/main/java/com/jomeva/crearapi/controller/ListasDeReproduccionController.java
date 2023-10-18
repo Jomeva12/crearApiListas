@@ -6,7 +6,7 @@ package com.jomeva.crearapi.controller;
 
 import com.jomeva.crearapi.model.Cancion;
 import com.jomeva.crearapi.model.ListasDeReproduccion;
-import com.jomeva.crearapi.repository.ListaDeReproduccionService;
+import com.jomeva.crearapi.service.ListaDeReproduccionService;
 import com.jomeva.crearapi.repository.ListasDeReproduccionRepository;
 import java.net.URI;
 import java.util.List;
