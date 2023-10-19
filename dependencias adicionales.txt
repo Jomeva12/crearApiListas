@@ -1,0 +1,11 @@
+al inicio del proyecto
+adicional a las de siempre usar JDBC API
+*spring security
+*java mail sender
+*io.jsonwebtoken maven en la pagina
+*android-json maven dependecy
+---pdf---
+*para pdf pdfbox maven dependecy
+*itextpfd
+*guagua pdf
+*gson maven

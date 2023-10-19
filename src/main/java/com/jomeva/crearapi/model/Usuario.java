@@ -42,11 +42,5 @@ public class Usuario {
 private String status;
 @Column(name = "email")
 private String email;
-//  public Usuario(String nombre, String userName, String password) {
-//    this.nombre = nombre;
-//    this.userName = userName;
-//    this.password = password;
-//  }
-
   
 }

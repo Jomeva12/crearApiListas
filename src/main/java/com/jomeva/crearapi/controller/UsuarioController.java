@@ -4,6 +4,7 @@
  */
 package com.jomeva.crearapi.controller;
 
+import com.jomeva.crearapi.security.UsuarioDetailService;
 import com.jomeva.crearapi.service.UsuarioService;
 import com.jomeva.crearapi.util.CancionesUtil;
 import java.util.Map;
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @Slf4j
 public class UsuarioController {
-
+@Autowired
+private UsuarioDetailService usuarioDetailService;
   @Autowired
   private UsuarioService usuarioService;
 
@@ -40,5 +42,17 @@ public class UsuarioController {
       return CancionesUtil.getResponseEntity("No se pudo registrar", HttpStatus.BAD_REQUEST);
     }
 
-  
+   @PostMapping("/login")
+  public ResponseEntity<String> login(@RequestBody(required = true) Map<String, String> requestMap) {
+    log.info("Solicitud de inicio de sesión recibida. Datos: {}", requestMap);
+    
+    try {
+        // Llama a tu servicio de autenticación aquí y agrega más mensajes de registro según sea necesario.
+        return usuarioService.login(requestMap);
+    } catch (Exception e) {
+        log.error("Error durante el inicio de sesión: {}", e.getMessage());
+        e.printStackTrace();
+        return CancionesUtil.getResponseEntity("No se pudo loguear", HttpStatus.BAD_REQUEST);
+    }
+  }
 }
