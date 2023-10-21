@@ -61,14 +61,14 @@ log.info("Claims del token: {}", claims);
         .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
         .signWith(SignatureAlgorithm.HS256, secret)
         .compact();
-
+log.info("rol: {}", claims);
     log.info("Token generado: {}", token);
     return token;
   }  
   
   public Boolean validarToken(String token, UserDetails userDetail){
     String userName=extraerUserName(token);
-    return (userName.equals(userDetail.getUsername())&& isTokenExpired(token));
+    return (userName.equals(userDetail.getUsername())&& !isTokenExpired(token));
   }
   // Firma una clave secreta.
   public String firmarClaveSecreta(String claveSecreta) {

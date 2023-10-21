@@ -36,7 +36,7 @@ public class Usuario {
   @Column(name = "password")
   private String password;
 @Column(name = "role")
-  private String role;
+ private String role;
 
 @Column(name = "status")
 private String status;

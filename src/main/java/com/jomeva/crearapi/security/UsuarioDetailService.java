@@ -7,9 +7,13 @@ package com.jomeva.crearapi.security;
 import com.jomeva.crearapi.model.Usuario;
 import com.jomeva.crearapi.repository.UsuarioRepository;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,8 +38,11 @@ public class UsuarioDetailService implements UserDetailsService {
     log.info("dentro del metodo loadByUserName {}", username);
     usuario=usuarioRepository.findByEmail(username);
     if (!Objects.isNull(usuario)) {
-      
-      return new User(usuario.getEmail(), usuario.getPassword(), new ArrayList<>());
+       Set<GrantedAuthority> authorities = new HashSet<>();
+   
+        authorities.add(new SimpleGrantedAuthority(usuario.getRole()));
+    
+      return new User(usuario.getEmail(), usuario.getPassword(), authorities);
     }else{
       throw new UsernameNotFoundException("Usuario no encontrado");
     }

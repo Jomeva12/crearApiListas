@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -36,17 +37,22 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-    @Bean
+  @Autowired
+  private JwtFilter jwtFilter;
+  
+   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(request -> {
-                request.requestMatchers("/user/login", "/user/registrar", "/user/forgotPassword").permitAll();
-                request.requestMatchers("/users")
-                    .hasAnyAuthority("USER", "ADMIN");
-            }).build();
+                request.requestMatchers("user/login", "user/registrar", "user/forgotPassword").permitAll();
+                request.requestMatchers("/cancion").hasAuthority( "ADMIN");
+                 
+            }).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 
+                .build();
     }
- /*.formLogin(Customizer.withDefaults())*/
+  
+  
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
     return authenticationConfiguration.getAuthenticationManager();

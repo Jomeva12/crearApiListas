@@ -12,10 +12,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,6 +26,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * @author johan
  */
+@Slf4j
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -38,12 +41,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-    if (request.getServletPath().matches("user/login|user/forgotPassword|user/signup")) {
+    log.info("pathhh {}", request.getServletPath());
+    if (request.getServletPath().matches("/user/login|/user/forgotPassword|/user/registrar")) {
       filterChain.doFilter(request, response);
 
     } else {
-      String authorizationHeader = request.getHeader("Autorization");
+      String authorizationHeader = request.getHeader("Authorization");
       String token = null;
       if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         token = authorizationHeader.substring(7);
@@ -52,12 +55,14 @@ public class JwtFilter extends OncePerRequestFilter {
       }
       if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         UserDetails userDetail = usuarioDetailService.loadUserByUsername(userName);
+
         if (jwtUtil.validarToken(token, userDetail)) {
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                   = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
           new WebAuthenticationDetailsSource().buildDetails(request);
           SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
+
       }
       filterChain.doFilter(request, response);
 
@@ -74,7 +79,8 @@ public class JwtFilter extends OncePerRequestFilter {
   public Boolean isUser() {
     return "user".equalsIgnoreCase((String) claims.get("role"));
   }
-  public String getCurrentUsuario(){
+
+  public String getCurrentUsuario() {
     return userName;
   }
 }
