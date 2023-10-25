@@ -20,17 +20,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer{
   
   @Autowired
   private UsuarioDetailService usuarioDetailService;
-//  @Autowired
-//  private JwtFilter jwtFilter;
-  
-  
+
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -39,20 +39,45 @@ public class SecurityConfig {
 
   @Autowired
   private JwtFilter jwtFilter;
-  
-   @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> {
-                request.requestMatchers("user/login", "user/registrar", "user/forgotPassword").permitAll();
-                request.requestMatchers("/cancion").hasAuthority( "ADMIN");
+  /**
+ * Configura una cadena de filtros de seguridad para gestionar la seguridad y autorización de las solicitudes HTTP.
+ *
+ * @param http Configuración de seguridad de Spring Security.
+ * @return Una instancia de SecurityFilterChain configurada.
+ * @throws Exception Si se produce una excepción durante la configuración.
+ */
+    @Bean
+     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+              
+          http.csrf(AbstractHttpConfigurer::disable)
+             .cors(AbstractHttpConfigurer::disable)
+             .authorizeHttpRequests(request -> {
+                 request.requestMatchers("user/login", "user/registrar", "user/forgotPassword").permitAll();// Rutas públicas sin requerir autenticación.
+                 request.requestMatchers("/cancion").hasAuthority( "ADMIN");// Requiere autorización "ADMIN" para la ruta "/cancion".
+ request.requestMatchers("/lists/**").hasAuthority( "ADMIN");
+             })
+                  .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);// Agrega el filtro JWT antes del filtro de autenticación por nombre de usuario y contraseña. 
                  
-            }).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 
-                .build();
-    }
+          http.cors(withDefaults());
+      return http.build();   
+          
+     }
   
-  
+   
+ /*@Bean
+     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+              
+         return http.csrf(AbstractHttpConfigurer::disable)
+             .cors(AbstractHttpConfigurer::disable)
+             .authorizeHttpRequests(request -> {
+                 request.requestMatchers("user/login", "user/registrar", "user/forgotPassword").permitAll();// Rutas públicas sin requerir autenticación.
+                 request.requestMatchers("/cancion").hasAuthority( "ADMIN");// Requiere autorización "ADMIN" para la ruta "/cancion".
+ request.requestMatchers("/lists").hasAuthority( "ADMIN");
+             }).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)// Agrega el filtro JWT antes del filtro de autenticación por nombre de usuario y contraseña. 
+                 .build();
+     }
+  */
+ 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
     return authenticationConfiguration.getAuthenticationManager();

@@ -7,8 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
@@ -20,17 +22,26 @@ public class CrearApiApplication{
 	}
     
     
-   // Configura las reglas de CORS para permitir solicitudes desde cualquier origen y método HTTP. 
+    
+    
+  
+
+   
+    
+
+//    
   @Bean
 public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
+            System.out.println("Configuración CORS aplicada");
         }
     };
 }
-
+    
+ 
  
 
 }

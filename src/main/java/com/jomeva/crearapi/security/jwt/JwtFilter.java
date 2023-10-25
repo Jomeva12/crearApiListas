@@ -39,13 +39,27 @@ public class JwtFilter extends OncePerRequestFilter {
 
   private String userName = null;
 
+  /**
+ * Este método se encarga de realizar la autenticación y autorización de las solicitudes entrantes.
+ *
+ * @param request       La solicitud HTTP entrante.
+ * @param response      La respuesta HTTP que se enviará al cliente.
+ * @param filterChain   La cadena de filtros que se utilizará para continuar el procesamiento de la solicitud.
+ * @throws ServletException Si ocurre una excepción relacionada con el servlet.
+ * @throws IOException      Si ocurre una excepción relacionada con la entrada/salida.
+ */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    // Registra información de la ruta de la solicitud para propósitos de registro,login u otro acceso.
     log.info("pathhh {}", request.getServletPath());
     if (request.getServletPath().matches("/user/login|/user/forgotPassword|/user/registrar")) {
+      // Las rutas públicas no requieren autenticación, por lo que se permite el acceso sin procesar el token JWT.
       filterChain.doFilter(request, response);
 
     } else {
+      // Procesa solicitudes que no son rutas públicas y requieren autenticación.
+
+        // Obtiene el token JWT de la cabecera de autorización si está presente.
       String authorizationHeader = request.getHeader("Authorization");
       String token = null;
       if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -53,17 +67,20 @@ public class JwtFilter extends OncePerRequestFilter {
         userName = jwtUtil.extraerUserName(token);
         claims = jwtUtil.extrarAllClaims(token);
       }
+      // Verifica si el usuario ya está autenticado y si no, lo autentica.
       if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         UserDetails userDetail = usuarioDetailService.loadUserByUsername(userName);
 
         if (jwtUtil.validarToken(token, userDetail)) {
           UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                   = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
+           // Configura detalles de autenticación web y establece la autenticación en el contexto de seguridad.
           new WebAuthenticationDetailsSource().buildDetails(request);
           SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
 
       }
+      // Continúa el procesamiento de la solicitud en la cadena de filtros.
       filterChain.doFilter(request, response);
 
     }

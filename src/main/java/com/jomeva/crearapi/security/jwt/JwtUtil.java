@@ -51,9 +51,16 @@ public class JwtUtil {
     return crearToken(claims,userName);
     
   }
-  
+  /**
+ * Crea un token JWT con los (claims) y el nombre de usuario especificados.
+ *
+ * @param claims    Los datos que se incluirán en el token JWT.
+ * @param userName  El nombre de usuario asociado con el token JWT.
+ * @return          El token JWT generado.
+ */
   private String crearToken(Map<String, Object> claims, String userName) {
 log.info("Claims del token: {}", claims);
+  // Crea un token JWT con las claims y configuraciones específicas.
     String token = Jwts.builder()
         .setClaims(claims)
         .setSubject(userName)
@@ -65,9 +72,19 @@ log.info("rol: {}", claims);
     log.info("Token generado: {}", token);
     return token;
   }  
-  
+  /**
+ * Valida un token JWT verificando si coincide con el nombre de usuario del usuario proporcionado
+ * y si el token ha expirado.
+ *
+ * @param token       El token JWT que se va a validar.
+ * @param userDetail  Los detalles del usuario para los que se va a realizar la validación.
+ * @return            `true` si el token es válido, `false` en caso contrario.
+ */
   public Boolean validarToken(String token, UserDetails userDetail){
+      // Extrae el nombre de usuario del token.
     String userName=extraerUserName(token);
+    // Comprueba si el nombre de usuario del token coincide con el nombre de usuario del usuario proporcionado.
+    // Además, verifica si el token ha expirado.
     return (userName.equals(userDetail.getUsername())&& !isTokenExpired(token));
   }
   // Firma una clave secreta.

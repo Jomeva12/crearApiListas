@@ -34,7 +34,6 @@ public class CancionController {
      * @return La canción creada.
      */
   @PostMapping
- // @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
   public Cancion createCancion(@RequestBody Cancion cancion){   
     return cancionService.createCancion(cancion);
   }
